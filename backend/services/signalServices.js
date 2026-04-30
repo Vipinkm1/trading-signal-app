@@ -20,7 +20,7 @@ exports.createSignalService = (data, callback) => {
         expiry_time
     } = data;
 
-    // ✅ validation
+   
     if (!symbol || !direction || !entry_price || !stop_loss || !target_price || !entry_time || !expiry_time) {
         return callback("All fields are required");
     }
@@ -43,7 +43,7 @@ exports.createSignalService = (data, callback) => {
         return callback("Invalid time");
     }
 
-    // call model
+   
     createSignalModel(data, (err, result) => {
         if (err) return callback("Database error");
 
@@ -66,7 +66,7 @@ exports.getSignalsService = async (callback) => {
 
                     const status = calculateStatus(signal, price);
                     const roi = calculateROI(signal, price);
-                    // 🔥 IMPORTANT FIX
+                    
                     if (status !== signal.status) {
                         updateSignalStatus(signal.id, status, roi, () => { });
                     }
