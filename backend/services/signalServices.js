@@ -4,6 +4,8 @@ const { getAllSignals } = require("../models/signalModel");
 const { getLivePrice } = require("./priceServices");
 const { calculateStatus, calculateROI } = require("../utils/signalLogic");
 const { updateSignalStatus } = require("../models/signalModel");
+const { getSignalByIdModel } = require("../models/signalModel");
+const { deleteSignalModel } = require("../models/signalModel");
 
 exports.createSignalService = (data, callback) => {
     if (!data || typeof data !== "object") {
@@ -87,4 +89,20 @@ exports.getSignalsService = async (callback) => {
     });
 };
 
+exports.getSignalByIdService = (id, callback) => {
+  getSignalByIdModel(id, (err, result) => {
+    if (err || result.length === 0) {
+      return callback("Signal not found");
+    }
+    callback(null, result[0]);
+  });
+};
 
+exports.deleteSignalService = (id, callback) => {
+  deleteSignalModel(id, (err, result) => {
+    if (err || result.affectedRows === 0) {
+      return callback("Signal not found");
+    }
+    callback(null);
+  });
+};

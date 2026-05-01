@@ -14,3 +14,16 @@ export const getSignals = async () => {
   const res = await fetch("/api/signals");
   return res.json();
 };
+
+export const deleteSignal = async (id) => {
+  const res = await fetch(`/api/signals/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+};
+
+// 🔥 NEW
+export const getSignalById = async (id) => {
+  const res = await fetch(`/api/signals/${id}`);
+  return res.json();
+};

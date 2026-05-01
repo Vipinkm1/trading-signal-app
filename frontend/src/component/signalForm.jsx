@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createSignal } from "../services/api";
 
-function SignalForm() {
+function SignalForm({ onSignalCreated }) {
   const [form, setForm] = useState({
     symbol: "",
     direction: "BUY",
@@ -21,6 +21,8 @@ function SignalForm() {
 
     const res = await createSignal(form);
     alert(res.message);
+    if (onSignalCreated) onSignalCreated();
+    
   };
 
   return (

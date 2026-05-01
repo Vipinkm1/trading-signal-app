@@ -36,3 +36,13 @@ exports.updateSignalStatus = (id, status, roi, callback) => {
 
   db.query(query, [status, roi, id], callback);
 };
+
+exports.getSignalByIdModel = (id, callback) => {
+  const query = "SELECT * FROM signals WHERE id = ?";
+  db.query(query, [id], callback);
+};
+
+exports.deleteSignalModel = (id, callback) => {
+  const query = "DELETE FROM signals WHERE id = ?";
+  db.query(query, [id], callback);
+};

@@ -1,5 +1,7 @@
 const { createSignalService } = require("../services/signalServices");
 const { getSignalsService } = require("../services/signalServices");
+const { getSignalByIdService } = require("../services/signalServices");
+const { deleteSignalService } = require("../services/signalServices");
 
 exports.createSignal = (req, res) => {
   createSignalService(req.body, (err, result) => {
@@ -23,5 +25,20 @@ exports.getSignals = (req, res) => {
     }
 
     res.json(result);
+  });
+};
+
+exports.getSignalById = (req, res) => {
+  getSignalByIdService(req.params.id, (err, result) => {
+    if (err) return res.status(404).json({ message: err });
+    res.json(result);
+  });
+};
+
+exports.deleteSignal = (req, res) => {
+  deleteSignalService(req.params.id, (err) => {
+    if (err) return res.status(404).json({ message: err });
+
+    res.json({ message: "Signal deleted successfully" });
   });
 };

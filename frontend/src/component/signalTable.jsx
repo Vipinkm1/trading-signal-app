@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { getSignals } from "../services/api";
+import { getSignals, deleteSignal } from "../services/api";
 
-function SignalTable() {
+
+function SignalTable({ refreshKey }) {
   const [signals, setSignals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedSignal, setSelectedSignal] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -20,7 +22,7 @@ function SignalTable() {
     fetchData();
     const interval = setInterval(fetchData, 15000);
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshKey]);
 
   const getStatusStyle = (status) => {
     switch (status) {
@@ -41,6 +43,12 @@ function SignalTable() {
 
     const mins = Math.floor(diff / 60000);
     return `${mins} min`;
+  };
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure?")) return;
+
+    await deleteSignal(id);
+    fetchData(); // refresh
   };
 
   return (
@@ -64,6 +72,7 @@ function SignalTable() {
               <th>Status</th>
               <th>ROI</th>
               <th>Time Left</th>
+              <th>Action</th>
             </tr>
           </thead>
 
@@ -91,11 +100,49 @@ function SignalTable() {
                 </td>
 
                 <td>{getTimeRemaining(s.expiry_time)}</td>
+                <td>
+                  <button
+                    onClick={() => handleDelete(s.id)}
+                    style={{ background: "red", color: "white", marginRight: "10px" }}
+                  >
+                    Delete
+                  </button>
+                  <button onClick={() => setSelectedSignal(s)}>View</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        
+
       )}
+      {selectedSignal && (
+  <div
+    style={{
+      position: "fixed",
+      top: "20%",
+      left: "40%",
+      width: "250px",
+      background: "white",
+      padding: "20px",
+      border: "1px solid #ccc",
+      borderRadius: "10px",
+      boxShadow: "0 0 10px rgba(0,0,0,0.2)"
+    }}
+  >
+    <h3>Signal Details</h3>
+
+    <p><b>Symbol:</b> {selectedSignal.symbol}</p>
+    <p><b>Direction:</b> {selectedSignal.direction}</p>
+    <p><b>Entry:</b> {selectedSignal.entry_price}</p>
+    <p><b>Target:</b> {selectedSignal.target_price}</p>
+    <p><b>Stop Loss:</b> {selectedSignal.stop_loss}</p>
+    <p><b>Status:</b> {selectedSignal.status}</p>
+    <p><b>ROI:</b> {selectedSignal.roi}%</p>
+
+    <button onClick={() => setSelectedSignal(null)}>Close</button>
+  </div>
+)}
     </div>
   );
 }
